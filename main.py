@@ -1,4 +1,5 @@
 from map.gas_market_simulator import GasMarketSimulator
+import time
 
 if __name__ == "__main__":
 
@@ -12,6 +13,9 @@ if __name__ == "__main__":
 
     # Run simulator for desired amount of time (usually days):
 
+    def run_simulation():
+        while True:
+            
     # Open visualization to allow user to navigate through time to see the price changes and traffic movement:
 
 

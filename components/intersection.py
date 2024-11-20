@@ -1,6 +1,6 @@
 class Intersection:
     
-    def __init__(self, location, wait_time, traffic_rating):
-        self.location = location
+    def __init__(self, coordinate, wait_time, spawn_rate):
+        self.coordinate = coordinate
         self.wait_time = wait_time
-        self.traffic_rating = traffic_rating
+        self.spawn_rate = spawn_rate

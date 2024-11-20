@@ -3,7 +3,8 @@ import random
 
 class Car:
     
-    def __init__(self, fuel_capacity, gas_station_set, roadway_list, intersection_list, shortest_paths):
+    def __init__(self, id, fuel_capacity, gas_station_set, roadway_list, intersection_list, shortest_paths):
+        self.id = id
         self.time = GlobalClock()
         self.fuel_capacity = fuel_capacity
         self.current_fuel_level = fuel_capacity
@@ -11,7 +12,10 @@ class Car:
         self.spawn_location = self.generate_spawn(intersection_list)
         self.destination = self.generate_destination(intersection_list)
         self.route = self.choose_route(roadway_list)
-        self.current_location = self.spawn_location
+        self.current_position = self.current_position
+
+    def __repr__(self):
+        return f'Car #{self.id}: Currently at {self.current_position}, Fuel level: {self.current_fuel_level}/{self.fuel_capacity}'
 
     def generate_spawn(self, intersection_list):
         """Returns a random intersection"""
