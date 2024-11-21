@@ -12,7 +12,7 @@ class GasMarketSimulator: # Needs to output a big dataset for visualization.py t
     def __init__(self, layout_name):
         self.map_data = self.get_map(layout_name)
         self.map = self.build_map()
-        self.time = GlobalClock()
+        self.clock = GlobalClock()
         self.shortest_paths = get_adjacency_matrix(self.map.roadways, self.map.intersections)
         self.default_speed_limit = 0.45 # (m/s)   ~30 miles per hour
         self.default_wait_time = 60 # (s)
