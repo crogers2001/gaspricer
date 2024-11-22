@@ -8,9 +8,9 @@ class GasStation:
         self.competitor_priority_list = self.get_station_priority_list(gas_station_list, shortest_paths)
         self.current_inventory = 0 # gallons of gas
         self.maximum_inventory_capacity = 20000 # gallons of gas
-        self.posted_gas_price = 0
+        self.posted_gas_price = 0 
         self.current_wholesale_price = 0
-        self.sales = {}
+        self.sales = {} 
         self.purchases = {}
         self.account_balance = 100000 # starting balance
 
