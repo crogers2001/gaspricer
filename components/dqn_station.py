@@ -69,6 +69,9 @@ class DQNStation(GasStation):
     #         ans += "," + str(self.statistics[s.value])
     #     return ans
 
+    def update(self):
+        pass
+
 class Statistics(Enum):
     Episode = 0
     Rewards = 1

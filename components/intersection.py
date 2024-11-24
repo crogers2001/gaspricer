@@ -4,3 +4,6 @@ class Intersection:
         self.coordinate = coordinate
         self.wait_time = wait_time
         self.spawn_rate = spawn_rate
+
+    def update(self):
+        pass

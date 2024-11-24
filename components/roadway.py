@@ -4,5 +4,6 @@ class Roadway:
         self.coordinate = coordinate
         self.speed_limit = speed_limit
 
-    
+    def update(self):
+        pass
 

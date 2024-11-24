@@ -17,5 +17,8 @@ class Competitor(GasStation):
             def fixed_markup():
                 self.set_price(self.current_wholesale_price + self.fixed_markup) # set the price to a fixed markup above wholesale
             return fixed_markup
+        
+    def update(self):
+        pass
 
 

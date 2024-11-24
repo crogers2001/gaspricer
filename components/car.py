@@ -12,7 +12,9 @@ class Car:
         self.spawn_location = self.generate_spawn(intersection_list)
         self.destination = self.generate_destination(intersection_list)
         self.route = self.choose_route(roadway_list)
-        self.current_position = self.current_position
+        self.current_position = self.spawn_location
+        self.gas_station_memory = {}
+        self.speed = 0
 
     def __repr__(self):
         return f'Car #{self.id}: Currently at {self.current_position}, Fuel level: {self.current_fuel_level}/{self.fuel_capacity}'
@@ -30,13 +32,18 @@ class Car:
         """Returns list of roadways and intersections it will pass through"""
         spawn_idx = intersection_list.index(self.spawn_location)
         destination_idx = intersection_list.index(self.destination)
-        path_cost = self.shortest_paths[spawn_idx][destination_idx]
+
 
     def decide_to_buy(self):
         if self.current_fuel_level < 0.1:
             return True
-        # if price is lower than 
+        if self.current_fuel_level < 0.5:
+            return True
+        return False
+    
+    def observe_speed_limit(self):
+        """Updates current speed to the speed limit of the Roadway this Car is currently on"""
+        pass
 
-    def drive(self):
-        self.time.tick()
-        
+    def update(self):
+        pass

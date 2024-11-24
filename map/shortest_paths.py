@@ -64,14 +64,14 @@ def get_shortest_paths(roadways, intersections):
 
 
 
-intersections = {(0, 6): 0, (2, 6): 1, (5, 6): 2, (0, 3): 3, (2, 3): 4, (5, 3): 5, (0, 2): 6, (0, 1): 7, (5, 1): 8, (0, 0): 9, (2, 0): 10, (3, 0): 11, (5, 0): 12}
-roadways = [((0,6), (2,6)), ((2,6), (5,6)), ((0,6), (0,3)), ((2,6), (2,3)), ((5,6), (5,3)), ((0,3), (2,3)), ((2,3), (5,3)), ((0,3), (0,2)), ((0,2), (0,1)), ((0,1), (0,0)), ((5,3), (5,1)), ((5,1), (5,0)), ((0,0), (2,0)), ((2,0), (3,0)), ((3,0), (5,0))] 
+# intersections = {(0, 6): 0, (2, 6): 1, (5, 6): 2, (0, 3): 3, (2, 3): 4, (5, 3): 5, (0, 2): 6, (0, 1): 7, (5, 1): 8, (0, 0): 9, (2, 0): 10, (3, 0): 11, (5, 0): 12}
+# roadways = [((0,6), (2,6)), ((2,6), (5,6)), ((0,6), (0,3)), ((2,6), (2,3)), ((5,6), (5,3)), ((0,3), (2,3)), ((2,3), (5,3)), ((0,3), (0,2)), ((0,2), (0,1)), ((0,1), (0,0)), ((5,3), (5,1)), ((5,1), (5,0)), ((0,0), (2,0)), ((2,0), (3,0)), ((3,0), (5,0))] 
 
-shortest_paths = get_shortest_paths(roadways, intersections)
+# shortest_paths = get_shortest_paths(roadways, intersections)
 
-print(shortest_paths[0][12])
-print(shortest_paths[0][12][0])
-print(shortest_paths[0][12][1])
+# print(shortest_paths[0][12])
+# print(shortest_paths[0][12][0])
+# print(shortest_paths[0][12][1])
 # Display results
 # for i, row in enumerate(shortest_paths):
 #     for j, (distance, path) in enumerate(row):
