@@ -2,8 +2,8 @@ from components.gas_station import GasStation
 
 class Competitor(GasStation):
 
-    def __init__(self, coordinate, gas_station_list, shortest_paths, pricing_strategy):
-        super().__init__(coordinate, gas_station_list, shortest_paths)
+    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, pricing_strategy):
+        super().__init__(coordinate, gas_station_list, shortest_paths, intersections)
         self.pricing_strategy = self.get_pricing_fn(pricing_strategy)
         self.fixed_markup = 0.20
 

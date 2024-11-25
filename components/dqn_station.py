@@ -5,8 +5,8 @@ from enum import Enum
 # Combining DQN and Abstract Solver classes
 
 class DQNStation(GasStation):
-    def __init__(self, coordinate, gas_station_list, shortest_paths, env, eval_env, options):
-        super().__init__(coordinate, gas_station_list, shortest_paths)
+    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, env, eval_env, options):
+        super().__init__(coordinate, gas_station_list, shortest_paths, intersections)
         self.statistics = [0] * len(Statistics)
         self.env = env
         self.eval_env = eval_env
@@ -69,7 +69,7 @@ class DQNStation(GasStation):
     #         ans += "," + str(self.statistics[s.value])
     #     return ans
 
-    def update(self):
+    def update(self, p_w, p_o, p_c, t, d, i):
         pass
 
 class Statistics(Enum):

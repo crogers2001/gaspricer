@@ -1,5 +1,5 @@
 from map.gas_market_simulator import GasMarketSimulator
-import time
+from visualization.visualization import visualize
 
 if __name__ == "__main__":
 
@@ -11,20 +11,9 @@ if __name__ == "__main__":
 
     # Prompt user how long they want the simulation to run for:
 
-    # Run simulator for desired amount of time (usually days):
-
-    def run_simulation():
-        while True:
+    # Run simulator for desired number of 'seconds':
+    simulator.run_simulation(2)
             
     # Open visualization to allow user to navigate through time to see the price changes and traffic movement:
+    visualize(simulator.visualization_data)
 
-
-    
-
-
-    #### Testing clock
-    print(f'Start global clock: {simulator.get_time()}')
-    simulator.add_3_seconds()
-    print(f'Middle global clock: {simulator.get_time()}')
-    simulator.move_car()
-    print(f'End global clock: {simulator.get_time()}')
