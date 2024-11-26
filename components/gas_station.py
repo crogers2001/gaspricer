@@ -1,21 +1,25 @@
 from components.global_clock import GlobalClock
+from collections import deque
 
 class GasStation:
 
-    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections):
+    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w):
         self.clock = GlobalClock()
         self.coordinate = coordinate # acts as ID 
         self.competitor_priority_list = self.get_station_priority_list(gas_station_list, shortest_paths, intersections)
         self.current_inventory = 0 # gallons of gas
         self.maximum_inventory_capacity = 20000 # gallons of gas
-        self.posted_gas_price = 0 
-        self.current_wholesale_price = 0
-        self.sales = {} 
-        self.purchases = {}
+        self.operating_costs = 0.06 # required profit per gallon
+        self.current_wholesale_price = starting_p_w
+        self.posted_gas_price = self.current_wholesale_price + self.operating_costs
+        self.sales = {} # key = car_id
+        self.sales_last_hour = deque()
+        self.gallons_last_hour = 0
+        self.purchases = {} # key = timestamp
         self.account_balance = 100000 # starting balance
 
     def get_station_priority_list(self, gas_station_list, shortest_paths, intersections):
-        """Returns a list of the other gas stations sorted by proximity to this gas station"""
+        """Returns a list of the coordinates other gas stations sorted by proximity to this gas station"""
         unsorted_list = []
         my_index = intersections[self.coordinate]
         for gs in gas_station_list:
@@ -42,18 +46,37 @@ class GasStation:
         price = self.posted_gas_price
         revenue = volume * price
         profit = revenue - (volume * self.current_wholesale_price)
-        self.sales[self.clock.get_time()] = (profit, volume, price, car_id) # profit, volume, price, car_id
+
+        timestamp = self.clock.get_time()
+        self.sales_last_hour.append((timestamp, volume, price, car_id))
+
+        if car_id not in self.sales:
+            self.sales[car_id] = {'total_volume': 0, 'total_revenue': 0, 'total_profit': 0}
+        self.sales[car_id]['total_volume'] += volume
+        self.sales[car_id]['total_revenue'] += revenue
+        self.sales[car_id]['total_profit'] += profit
+
+        self.gallons_last_hour += volume
         self.account_balance += revenue
+        self._cleanup_old_sales()
         return True
 
-    def replenish_inventory(self, wholesale_price):
+    def _cleanup_old_sales(self):
+        """Removes transactions from the deque that are older than one hour."""
+        current_time = self.clock.get_time()
+        one_hour_ago = current_time - 3600
+
+        while self.sales_last_hour and self.sales_last_hour[0][0] < one_hour_ago:
+            timestamp, volume, _, _ = self.sales_last_hour.popleft()
+            self.gallons_last_hour -= volume
+
+    def replenish_inventory(self):
         """Returns boolean value. Adjusts inventory, balance, and makes a record of the purchase if valid transaction."""
         if self.current_inventory == self.maximum_inventory_capacity:
             return False
-        self.current_wholesale_price = wholesale_price
         volume = self.maximum_inventory_capacity - self.current_inventory
-        cost = -(volume * wholesale_price)
-        self.purchases[self.clock.get_time()] = (cost, volume, wholesale_price)
+        cost = -(volume * self.current_wholesale_price)
+        self.purchases[self.clock.get_time()] = (cost, volume, self.current_wholesale_price)
         self.account_balance =+ cost
         return True
 

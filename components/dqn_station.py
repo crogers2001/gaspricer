@@ -5,13 +5,15 @@ from enum import Enum
 # Combining DQN and Abstract Solver classes
 
 class DQNStation(GasStation):
-    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, env, eval_env, options):
-        super().__init__(coordinate, gas_station_list, shortest_paths, intersections)
+    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, env, eval_env, options):
+        super().__init__(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
+        self.p_c = {}
         self.statistics = [0] * len(Statistics)
         self.env = env
         self.eval_env = eval_env
         self.options = options
         self.total_steps = 0
+        
 
     def init_stats(self):
         pass
@@ -68,9 +70,38 @@ class DQNStation(GasStation):
     #     for s in Statistics:
     #         ans += "," + str(self.statistics[s.value])
     #     return ans
+    def get_p_w(self):
+        """Returns current price of wholesale"""
+        return self.current_wholesale_price
+    
+    def get_p_o(self):
+        """Returns our price"""
+        return self.posted_gas_price
+    
+    def get_p_c(self):
+        """Returns dictionary of competitors' prices"""
+        return self.p_c
 
-    def update(self, p_w, p_o, p_c, t, d, i):
-        pass
+    def get_d(self):
+        """Returns demand (gallons sold in the last hour)"""
+        return self.gallons_last_hour
+    
+    def get_i(self):
+        """Returns current inventory"""
+        return self.current_inventory
+    
+    def update(self, gas_prices, new_p_w=None):
+        if new_p_w:
+            self.current_wholesale_price = new_p_w
+            self.replenish_inventory()
+
+        gas_prices_copy = gas_prices.copy()
+        del gas_prices_copy[self.coordinate] # Remove self from gas_prices_copy
+        self.p_c = gas_prices_copy
+
+        #Update gas price using DQN algorithm:
+
+        return self.posted_gas_price
 
 class Statistics(Enum):
     Episode = 0

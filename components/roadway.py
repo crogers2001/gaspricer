@@ -5,6 +5,4 @@ class Roadway:
         self.speed_limit = speed_limit
         self.orientation = v_orientation # used for rendering. Currently doesn't work well since there can be horizontal and vertical roadways entering an intersection.
         self.distance = 300 # meters
-    def update(self):
-        pass
 
