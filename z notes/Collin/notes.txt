@@ -6,3 +6,5 @@ This can be done by changing the 'type' property of multiple values at the "gas_
 The problem is, the visualization data builder in GasMarketSimulator.run_simulator() and visualzation code in visualization.py currently expects there to only be one DQNStation.
 Changing this should not be too complicated. 
 
+TO DO:
+-Update gas_station so it cleans up its deque even when a sale doesn't occur

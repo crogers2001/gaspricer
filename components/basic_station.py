@@ -1,4 +1,6 @@
 from components.gas_station import GasStation
+import random
+
 from globals import DEBUG_BASIC_STATION
 def debug(str):
     if DEBUG_BASIC_STATION:
@@ -9,7 +11,8 @@ class BasicStation(GasStation):
     def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, pricing_strategy):
         super().__init__(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
         self.pricing_strategy = self.get_pricing_fn(pricing_strategy)
-        self.fixed_markup = 0.20
+        self.fixed_markup = round(random.uniform(0.10, 0.20), 2)
+        print(f'Markup: {self.fixed_markup}')
 
     def get_pricing_fn(self, pricing_strategy):
         if pricing_strategy == "match_nearest":
@@ -34,7 +37,7 @@ class BasicStation(GasStation):
             self.current_wholesale_price = new_wholesale_price
             self.replenish_inventory()
             
-        self.posted_gas_price = self.pricing_strategy(gas_prices)
+        self.set_and_adjust_price(self.pricing_strategy(gas_prices))
         return self.posted_gas_price
 
 

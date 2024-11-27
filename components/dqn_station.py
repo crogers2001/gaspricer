@@ -87,6 +87,10 @@ class DQNStation(GasStation):
         """Returns dictionary of competitors' prices"""
         return self.p_c
 
+    def get_t(self):
+        """Returns current number of cars in front of gas station"""
+        return self.cars_at_intersection
+    
     def get_d(self):
         """Returns demand (gallons sold in the last hour)"""
         return self.gallons_last_hour
@@ -95,17 +99,34 @@ class DQNStation(GasStation):
         """Returns current inventory"""
         return self.current_inventory
     
-    def update(self, gas_prices, new_p_w=None):
+
+    def update(self, gas_prices, traffic, current_hour, new_p_w=None):
+        if self.clock.get_time() == 1: # Match nearest to start
+            coord_of_nearest = self.competitor_priority_list[0]
+            new_price = gas_prices[coord_of_nearest]
+            self.set_and_adjust_price(new_price)
+            return self.posted_gas_price
+        
         if new_p_w:
             self.current_wholesale_price = new_p_w
             self.replenish_inventory()
 
+        inventory_level = self.current_inventory / self.maximum_inventory_capacity
+
+        # if current_hour == self.refueling_time and inventory_level < 0.5:
+        #     #FIXME: Inventory replenishing logic isn't realistic but 
+        #     # needs to be done this way until I can think of a good way 
+        #     # to avoid replenishing every second of the current hour
+        #     self.replenish_inventory()
+
         gas_prices_copy = gas_prices.copy()
-        del gas_prices_copy[self.coordinate] # Remove self from gas_prices_copy
+        del gas_prices_copy[self.coordinate]
         self.p_c = gas_prices_copy
 
-        #Update gas price using DQN algorithm:
+        self.cars_at_intersection = traffic
 
+        #Update gas price using DQN algorithm:
+        # Use: self.set_and_adjust_price(new_price)
         return self.posted_gas_price
 
 class Statistics(Enum):

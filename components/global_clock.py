@@ -7,7 +7,8 @@ class GlobalClock:
         return cls._instance
     
     def __init__(self):
-        self.current_time = 0
+        if not hasattr(self, 'current_time'):
+            self.current_time = 0
 
     def get_time(self):
         return self.current_time

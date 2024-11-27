@@ -70,8 +70,8 @@ class GasMarketSimulator:
         self.today_hourly_traffic_cts = counts
         self.today_hourly_traffic_slopes = slopes
         self.tomorrow_first_traffic_ct = tomorrow_ct
-        debug(f'(gms.py): Expected traffic SLOPES at hour interval: {slopes} (length: {len(slopes)})')
-        debug(f'(gms.py): Expected traffic at hour interval: {counts} (length: {len(counts)})')
+        # debug(f'(gms.py): Expected traffic SLOPES at hour interval: {slopes} (length: {len(slopes)})')
+        # debug(f'(gms.py): Expected traffic at hour interval: {counts} (length: {len(counts)})')
 
     def init_cars(self):
         """Initializes cars at time 0"""
@@ -97,7 +97,6 @@ class GasMarketSimulator:
         """
         Updates self.cars by adding 'count' number of new cars
         """
-        debug(f'(gms.py): Compensating for despawned Cars by spawning {count} more Cars')
         for _ in range(0, count):
             intersections = list(self.map_data["intersections"].keys())
             spawn = random.choice(intersections)
@@ -146,7 +145,7 @@ class GasMarketSimulator:
             College_Station = {
                 "height": 6, # Grid map height (y)
                 "width": 5, # Grid map width (x)
-                "gas_stations": [((0,3), "dqn"), ((0,2), "match_nearest"), ((0,6), "match_nearest"), ((2,6), "match_nearest"), ((5,1), "fixed_markup")], # coordinate, pricing strategy pairs
+                "gas_stations": [((0,3), "dqn"), ((0,2), "fixed_markup"), ((0,6), "fixed_markup"), ((2,6), "match_nearest"), ((5,1), "fixed_markup")], # coordinate, pricing strategy pairs
                 "roadways": [((0,6), (2,6)), ((2,6), (5,6)), ((0,6), (0,3)), ((2,6), (2,3)), ((5,6), (5,3)), ((0,3), (2,3)), ((2,3), (5,3)), ((0,3), (0,2)), ((0,2), (0,1)), ((0,1), (0,0)), ((5,3), (5,1)), ((5,1), (5,0)), ((0,0), (2,0)), ((2,0), (3,0)), ((3,0), (5,0))], # endpoint coordinate, endpoint coordinate pairs
                 "intersections": {(0, 6): 0, (2, 6): 1, (5, 6): 2, (0, 3): 3, (2, 3): 4, (5, 3): 5, (0, 2): 6, (0, 1): 7, (5, 1): 8, (0, 0): 9, (2, 0): 10, (3, 0): 11, (5, 0): 12}, # dictionary of: key = coordinates, value = id
                 "max_traffic": 500, # Absolute maximum number of cars on map
@@ -220,11 +219,12 @@ class GasMarketSimulator:
             -Maintains expected quantity of active cars on map
             -Adds new entry into self.visualization_data["dynamic"] containing data that may change each second.
         """
-        debug(f'(gms.py): Start: {len(self.cars)}')
+        day_ct = 1
         loops = 0
         while loops < iterations:
             time = self.clock.get_time()
             current_hour = self.get_hour_of_day()
+            seconds_in_current_hour = time % 3600
             current_car_ct = len(self.cars)
             #FIXME: If we can get traffic data specific to days of the week, holiday season, etc-- add more trackers to affect current traffic level
 
@@ -237,6 +237,7 @@ class GasMarketSimulator:
                 "i": None,
             }
 
+
             ### Things that only change at the start of a new day
             p_w = 0
             p_w_update = False
@@ -245,29 +246,11 @@ class GasMarketSimulator:
                     p_w = self.wholesale_prices[time]
                     dqn_state_vars_display["p_w"] = p_w
                     p_w_update = True
-                if time >= 3600: 
+                if time >= 3600 and seconds_in_current_hour == 0: 
+                    day_ct += 1
+                    debug(f'Day {day_ct}-- Recalculating hourly traffic.')
                     self.update_today_hourly_traffic(noise_sd=0.025)
             
-            
-            ### Gas stations will update price based on the current state
-            old_gas_prices = self.get_gas_prices()
-            for coordinate, (gas_station, type) in self.gas_stations.items():  # Use .items() to get key-value pairs
-                if type == "dqn":
-                    dqn_state_vars_display["p_o"] = gas_station.update(old_gas_prices, p_w if p_w_update else None)
-                    # Set the rest of dqn_state_vars_display
-                    dqn_state_vars_display["d"] = gas_station.get_d()
-                    dqn_state_vars_display["i"] = gas_station.get_i()
-                else:
-                    dqn_state_vars_display["p_c"][coordinate] = gas_station.update(old_gas_prices, p_w if p_w_update else None)
-
-            ### Spawning cars based on current time and predetermined relative traffic flow:
-            expected_car_ct = math.floor(self.today_hourly_traffic_cts[current_hour] + (self.today_hourly_traffic_slopes[current_hour] * time))
-            # debug(f'######## expected_car_ct = {expected_car_ct}')
-            cars_to_spawn = expected_car_ct - current_car_ct
-            # debug(f'######## cars_to_spawn = {cars_to_spawn}')
-            if cars_to_spawn > 0:
-                self.spawn_cars(cars_to_spawn)
-
             ### Cars will proceed traversal or despawn, burn gas, and decide to buy gas
             updated_cars = []
             for car in self.cars:
@@ -281,6 +264,27 @@ class GasMarketSimulator:
 
             self.cars = updated_cars
 
+            ### Gas stations will update price based on the current state
+            old_gas_prices = self.get_gas_prices()
+            for coordinate, (gas_station, type) in self.gas_stations.items():  # Use .items() to get key-value pairs
+                traffic = car_locations_display.get(coordinate, 0)
+                if type == "dqn":
+                    dqn_state_vars_display["p_o"] = gas_station.update(old_gas_prices, traffic, current_hour, p_w if p_w_update else None)
+                    # Set the rest of dqn_state_vars_display
+                    dqn_state_vars_display["d"] = gas_station.get_d()
+                    dqn_state_vars_display["i"] = gas_station.get_i()
+                else:
+                    dqn_state_vars_display["p_c"][coordinate] = gas_station.update(old_gas_prices, p_w if p_w_update else None)
+
+
+            ### Spawning Cars to maintain expected traffic volume to compensate for despawning Cars:
+            expected_car_ct = math.floor(self.today_hourly_traffic_cts[current_hour] + (self.today_hourly_traffic_slopes[current_hour] * (seconds_in_current_hour)))
+            cars_to_spawn = expected_car_ct - current_car_ct
+            if cars_to_spawn > 0:
+                # debug(f'(gms.py): Seconds: {time}, Hour: {current_hour}, SiCH: {seconds_in_current_hour}, RCount: {current_car_ct}, ECount: {expected_car_ct}, HTC: {self.today_hourly_traffic_cts[current_hour]}, Slope: {self.today_hourly_traffic_slopes[current_hour]}')
+                self.spawn_cars(cars_to_spawn)
+
+
             ### Add a new entry into the visualization_data dictionary
             self.add_viz_data(dqn_state_vars_display, car_locations_display)
 
@@ -289,6 +293,14 @@ class GasMarketSimulator:
         
         debug(f'(gms.py): Viz data start: {self.visualization_data["dynamic"][0]}')
         debug(f'(gms.py): Viz data final: {self.visualization_data["dynamic"][iterations-1]}')
-        debug(f'(gms.py): End: {len(self.cars)}')
+        debug(f'(gms.py): End car count: {len(self.cars)}')
+        debug(f'DQNStation state variables at end:')
+        dqn, _ = self.gas_stations[(0,3)]
+        debug(f'p_w = {dqn.get_p_w()}')
+        debug(f'p_o = {dqn.get_p_o()}')
+        debug(f'p_c = {dqn.get_p_c()}')
+        debug(f't = {dqn.get_t()}')
+        debug(f'd = {dqn.get_d()}')
+        debug(f'i = {dqn.get_i()}')
 
 

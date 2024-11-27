@@ -16,19 +16,19 @@ class Car:
         self.route = route
         self.destination = destination
         self.fuel_capacity = fuel_capacity
-        self.current_fuel = random.randint(1,fuel_capacity)
+        self.current_fuel = random.gauss((fuel_capacity * 0.55), 1) # Results in ~11,800 gallons being sold per day to gas stations selling with no profit
         self.tank_level = self.get_fuel_level()
         self.current_position = spawn_location
         self.gas_stations = gas_stations
         self.gas_station_keys = list(gas_stations.keys())
         self.gas_price_memory = -100 # an arbitrary, low value that will be set to a real value later
         self.loyalty = None
-        self.dealbreaker_delta = 0.05
+        self.dealbreaker_delta = 0.03
         self.top_speed = 13.5
         self.time_active = 0
         self.at_intersection = False
         self.time_at_intersection = 0
-        self.fuel_burn_rate = 0.0009 # gallons/second, derived from 20mpg driving at 13.5 m/s
+        self.fuel_burn_rate = 0.00009 # gallons/second, derived from 20mpg driving at 13.5 m/s
         self.traversal = self.calculate_location_timing()
 
     def __repr__(self):
@@ -41,11 +41,23 @@ class Car:
         return self.current_fuel/self.fuel_capacity
     
     def decide_to_buy(self, price):
-        if self.get_fuel_level() < 0.1:
+        current_fuel_level = self.get_fuel_level()
+        if current_fuel_level < 0.1:
             debug(f'(car.py): Car {self.id} is buying gas (almost out)')
             # Needs gas no matter the price
             return True
-        if self.get_fuel_level() < 0.6:
+        if current_fuel_level < 0.25:
+            debug(f'(car.py): Car {self.id} might buy some gas')
+            ran = random.randint(1,10)
+            # 50% chance of the car buying even though it doesn't really need it
+            if ran <= 5:
+                debug(f'(car.py): Car {self.id} is buying gas (20% chance)')
+                return True
+            # 50% chance of the car buying only if it identifies it as a good deal compared to the last visited station
+            elif price <= self.gas_price_memory - self.dealbreaker_delta:
+                debug(f'(car.py): Car {self.id} is buying gas (good deal)')
+                return True
+        if current_fuel_level < 0.5:
             debug(f'(car.py): Car {self.id} might buy some gas')
             ran = random.randint(1,10)
             # 20% chance of the car buying even though it doesn't really need it
@@ -56,7 +68,6 @@ class Car:
             elif price <= self.gas_price_memory - self.dealbreaker_delta:
                 debug(f'(car.py): Car {self.id} is buying gas (good deal)')
                 return True
-                    
         self.gas_price_memory = price
         return False
 

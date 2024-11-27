@@ -1,5 +1,7 @@
 from components.global_clock import GlobalClock
 from collections import deque
+import random
+
 from globals import DEBUG_GAS_STATION
 def debug(str):
     if DEBUG_GAS_STATION:
@@ -21,7 +23,8 @@ class GasStation:
         self.gallons_last_hour = 0
         self.purchases = {} # key = timestamp
         self.account_balance = 100000 # starting balance
-
+        self.cars_at_intersection = 0
+        self.refueling_time = random.randint(0,6)
 
 
     def get_station_priority_list(self, gas_station_list, shortest_paths, intersections):
@@ -91,6 +94,7 @@ class GasStation:
         debug(f'(gas_station.py): Station {self.coordinate} restocked with {volume} gallons (Time: {self.clock.get_time()}).')
         return True
 
-    def set_price(self, new_price):
-        self.posted_gas_price = new_price
+    def set_and_adjust_price(self, new_price):
+        adj_price = round(new_price, 2) - 0.001
+        self.posted_gas_price = round(adj_price, 3)
 
