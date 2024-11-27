@@ -16,7 +16,7 @@ class Car:
         self.route = route
         self.destination = destination
         self.fuel_capacity = fuel_capacity
-        self.current_fuel = random.gauss((fuel_capacity * 0.55), 1) # Results in ~11,800 gallons being sold per day to gas stations selling with no profit
+        self.current_fuel = random.gauss((fuel_capacity * 0.553), 1)
         self.tank_level = self.get_fuel_level()
         self.current_position = spawn_location
         self.gas_stations = gas_stations

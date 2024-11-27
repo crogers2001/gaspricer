@@ -173,7 +173,7 @@ class GasMarketSimulator:
             coordinates, type = gas_station
             x, y = coordinates
             if type == "dqn":
-                new_station = DQNStation( (x,y), self.map_data["gas_stations"], self.shortest_paths, self.map_data["intersections"], self.wholesale_prices[0], None, None, None)
+                new_station = DQNStation( (x,y), self.map_data["gas_stations"], self.shortest_paths, self.map_data["intersections"], self.wholesale_prices[0])
                 smap[x][y]["gas_station"] = new_station
                 smap[x][y]["dqn"] = True
                 self.gas_stations[(x,y)] = (new_station, type)
