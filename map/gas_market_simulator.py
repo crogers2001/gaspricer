@@ -1,7 +1,7 @@
 from components.global_clock import GlobalClock
 from map.shortest_paths import get_shortest_paths
 from components.car import Car
-from components.basic_station import Competitor
+from components.basic_station import BasicStation
 from components.dqn_station import DQNStation
 from components.intersection import Intersection
 from components.roadway import Roadway
@@ -179,7 +179,7 @@ class GasMarketSimulator:
                 smap[x][y]["dqn"] = True
                 self.gas_stations[(x,y)] = (new_station, type)
             else:
-                new_station = Competitor( (x,y), self.map_data["gas_stations"], self.shortest_paths, self.map_data["intersections"], self.wholesale_prices[0], type)
+                new_station = BasicStation( (x,y), self.map_data["gas_stations"], self.shortest_paths, self.map_data["intersections"], self.wholesale_prices[0], type)
                 smap[x][y]["gas_station"] = new_station
                 self.gas_stations[(x,y)] = (new_station, type)
 

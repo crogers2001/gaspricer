@@ -3,8 +3,8 @@ from globals import DEBUG_BASIC_STATION
 def debug(str):
     if DEBUG_BASIC_STATION:
         print(str)
-        
-class Competitor(GasStation):
+
+class BasicStation(GasStation):
 
     def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, pricing_strategy):
         super().__init__(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
