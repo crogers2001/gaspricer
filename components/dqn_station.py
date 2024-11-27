@@ -6,14 +6,9 @@ def debug(str):
         print(str)
 
 class DQNStation(GasStation):
-    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, env, eval_env, options):
+    def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w):
         super().__init__(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
         self.p_c = {}
-        self.statistics = [0] * len(Statistics)
-        self.env = env
-        self.eval_env = eval_env
-        self.options = options
-        self.total_steps = 0
     
     def get_p_w(self):
         """Returns current price of wholesale"""
