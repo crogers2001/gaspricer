@@ -1,6 +1,10 @@
 from components.global_clock import GlobalClock
 import random
 import math
+from globals import DEBUG_CAR
+def debug(str):
+    if DEBUG_CAR:
+        print(str)
 
 class Car:
     
@@ -38,19 +42,19 @@ class Car:
     
     def decide_to_buy(self, price):
         if self.get_fuel_level() < 0.1:
-            print(f'Car {self.id} is buying gas (almost out)')
+            debug(f'(car.py): Car {self.id} is buying gas (almost out)')
             # Needs gas no matter the price
             return True
         if self.get_fuel_level() < 0.6:
-            print(f'Car {self.id} might buy some gas')
+            debug(f'(car.py): Car {self.id} might buy some gas')
             ran = random.randint(1,10)
             # 20% chance of the car buying even though it doesn't really need it
             if ran <= 2:
-                print(f'Car {self.id} is buying gas (20% chance)')
+                debug(f'(car.py): Car {self.id} is buying gas (20% chance)')
                 return True
             # 80% chance of the car buying only if it identifies it as a good deal compared to the last visited station
             elif price <= self.gas_price_memory - self.dealbreaker_delta:
-                print(f'Car {self.id} is buying gas (good deal)')
+                debug(f'(car.py): Car {self.id} is buying gas (good deal)')
                 return True
                     
         self.gas_price_memory = price
@@ -64,7 +68,7 @@ class Car:
         Returns a dictionary of timestamps identifying
         where the car will be at that timestamp
         """
-        # print(f'Route = {self.route}')
+        # debug(f'Route = {self.route}')
         d = {}
         d[self.spawn_time] = self.spawn_location
         time = self.spawn_time + 30
@@ -92,7 +96,7 @@ class Car:
             time += 30
 
         d[time] = -1 # Despawn
-        # print(d)
+        # debug(d)
         return d
 
     def buy_gas(self, gas_station):
@@ -111,7 +115,7 @@ class Car:
             coords = self.traversal[time]
             self.current_fuel -= self.fuel_burn_rate * (time - self.spawn_time) # Time elapsed since spawn
             if self.current_fuel <= 0:
-                print(f"Car {self.id} ran out of fuel!")
+                debug(f"(car.py): Car {self.id} ran out of fuel!")
                 return -1 # Despawn FIXME: If it doesn't despawn, it will definitely buy gas at next station.
             self.current_position = coords
             if coords in self.gas_station_keys:
@@ -124,7 +128,7 @@ class Car:
                         self.current_fuel = self.fuel_capacity
 
         if self.current_position == -1:
-            print(f"Car {self.id} has reached its destination and despawned (Time: {time})")
+            debug(f"(car.py): Car {self.id} has reached its destination and despawned (Time: {time})")
             return -1
         return self.current_position
 

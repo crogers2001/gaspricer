@@ -1,5 +1,9 @@
 from components.gas_station import GasStation
 from enum import Enum
+from globals import DEBUG_DQN_STATION
+def debug(str):
+    if DEBUG_DQN_STATION:
+        print(str)
 
 # Using code from Dr. Sharon's DQN.py and Abstract_Solver.py as a template (we might have to notify Dr. Sharon that we did this)
 # Combining DQN and Abstract Solver classes
@@ -13,7 +17,8 @@ class DQNStation(GasStation):
         self.eval_env = eval_env
         self.options = options
         self.total_steps = 0
-        
+    
+
 
     def init_stats(self):
         pass

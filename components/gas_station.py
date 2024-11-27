@@ -1,5 +1,9 @@
 from components.global_clock import GlobalClock
 from collections import deque
+from globals import DEBUG_GAS_STATION
+def debug(str):
+    if DEBUG_GAS_STATION:
+        print(str)
 
 class GasStation:
 
@@ -18,6 +22,8 @@ class GasStation:
         self.purchases = {} # key = timestamp
         self.account_balance = 100000 # starting balance
 
+
+
     def get_station_priority_list(self, gas_station_list, shortest_paths, intersections):
         """Returns a list of the coordinates other gas stations sorted by proximity to this gas station"""
         unsorted_list = []
@@ -34,13 +40,15 @@ class GasStation:
         for item in sorted_list:
             # ex: item = ((0,3), 4)
             ret_list.append(item[0])
-        # print(f'Prio list for station {self.coordinate}: {ret_list}')
+        # debug(f'Prio list for station {self.coordinate}: {ret_list}')
         return ret_list
 
 
     def sell_gas(self, volume, car_id):
         """Returns boolean value. Adjusts inventory, balance, and makes a record of the sale if valid transaction."""
+        debug(f'(gas_station.py): Station {self.coordinate} has been asked to sell {volume} gallons of gas to Car #{car_id}')
         if self.current_inventory < volume:
+            debug(f'Station {self.coordinate} rejected Car #{car_id}')
             return False
         self.current_inventory -= volume
         price = self.posted_gas_price
@@ -58,6 +66,7 @@ class GasStation:
 
         self.gallons_last_hour += volume
         self.account_balance += revenue
+        debug(f'(gas_station.py): Station {self.coordinate} sold {volume} gallons of gas to Car #{car_id}')
         self._cleanup_old_sales()
         return True
 
@@ -77,7 +86,9 @@ class GasStation:
         volume = self.maximum_inventory_capacity - self.current_inventory
         cost = -(volume * self.current_wholesale_price)
         self.purchases[self.clock.get_time()] = (cost, volume, self.current_wholesale_price)
+        self.current_inventory = self.maximum_inventory_capacity
         self.account_balance =+ cost
+        debug(f'(gas_station.py): Station {self.coordinate} restocked with {volume} gallons (Time: {self.clock.get_time()}).')
         return True
 
     def set_price(self, new_price):

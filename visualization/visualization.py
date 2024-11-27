@@ -1,7 +1,12 @@
 import pyglet
 from pyglet.shapes import Rectangle, Circle
 from pyglet.gl import glClearColor
+from globals import DEBUG_VISUALIZATION
+def debug(str):
+    if DEBUG_VISUALIZATION:
+        print(str)
 
+        
 glClearColor(211 / 255.0, 211 / 255.0, 211 / 255.0, 1.0)
 
 def visualize(visualization_data):

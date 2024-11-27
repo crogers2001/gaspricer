@@ -1,5 +1,9 @@
 from components.gas_station import GasStation
-
+from globals import DEBUG_BASIC_STATION
+def debug(str):
+    if DEBUG_BASIC_STATION:
+        print(str)
+        
 class Competitor(GasStation):
 
     def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, pricing_strategy):

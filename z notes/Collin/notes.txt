@@ -1,0 +1,8 @@
+The simulator has been set up so it can simulate different maps besides the default College Station map.
+The only thing that must be done to simulate a different map is to add a new option in GasStation.get_map().
+
+The simulator has also been (kinda) set up so there can be multiple RL-controlled gas stations (DQNStations) on one map.
+This can be done by changing the 'type' property of multiple values at the "gas_stations" key to "dqn" in the returned map_data dictionary from GasMarketSimulator.get_map().
+The problem is, the visualization data builder in GasMarketSimulator.run_simulator() and visualzation code in visualization.py currently expects there to only be one DQNStation.
+Changing this should not be too complicated. 
+
