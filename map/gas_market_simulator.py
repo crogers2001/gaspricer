@@ -221,6 +221,7 @@ class GasMarketSimulator:
         """
         day_ct = 1
         loops = 0
+        p_w = 0
         while loops < iterations:
             time = self.clock.get_time()
             current_hour = self.get_hour_of_day()
@@ -233,24 +234,24 @@ class GasMarketSimulator:
                 "p_w": None,
                 "p_o": None,
                 "p_c": {},
+                "t": None,
                 "d": None,
                 "i": None,
             }
 
 
             ### Things that only change at the start of a new day
-            p_w = 0
             p_w_update = False
             if current_hour == 0:
                 if time in self.wholesale_prices:
                     p_w = self.wholesale_prices[time]
-                    dqn_state_vars_display["p_w"] = p_w
                     p_w_update = True
                 if time >= 3600 and seconds_in_current_hour == 0: 
                     day_ct += 1
                     debug(f'Day {day_ct}-- Recalculating hourly traffic.')
                     self.update_today_hourly_traffic(noise_sd=0.025)
-            
+            dqn_state_vars_display["p_w"] = p_w
+
             ### Cars will proceed traversal or despawn, burn gas, and decide to buy gas
             updated_cars = []
             for car in self.cars:
@@ -271,6 +272,7 @@ class GasMarketSimulator:
                 if type == "dqn":
                     dqn_state_vars_display["p_o"] = gas_station.update(old_gas_prices, traffic, current_hour, p_w if p_w_update else None)
                     # Set the rest of dqn_state_vars_display
+                    dqn_state_vars_display["t"] = gas_station.get_t()
                     dqn_state_vars_display["d"] = gas_station.get_d()
                     dqn_state_vars_display["i"] = gas_station.get_i()
                 else:

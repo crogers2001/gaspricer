@@ -12,7 +12,6 @@ class BasicStation(GasStation):
         super().__init__(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
         self.pricing_strategy = self.get_pricing_fn(pricing_strategy)
         self.fixed_markup = round(random.uniform(0.10, 0.20), 2)
-        print(f'Markup: {self.fixed_markup}')
 
     def get_pricing_fn(self, pricing_strategy):
         if pricing_strategy == "match_nearest":

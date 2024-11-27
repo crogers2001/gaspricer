@@ -6,7 +6,7 @@ def debug(str):
         print(str)
 
 # Using code from Dr. Sharon's DQN.py and Abstract_Solver.py as a template (we might have to notify Dr. Sharon that we did this)
-# Combining DQN and Abstract Solver classes
+# Combining DQN and AbstractSolver classes
 
 class DQNStation(GasStation):
     def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, env, eval_env, options):
@@ -18,8 +18,6 @@ class DQNStation(GasStation):
         self.options = options
         self.total_steps = 0
     
-
-
     def init_stats(self):
         pass
 
@@ -113,11 +111,11 @@ class DQNStation(GasStation):
 
         inventory_level = self.current_inventory / self.maximum_inventory_capacity
 
-        # if current_hour == self.refueling_time and inventory_level < 0.5:
-        #     #FIXME: Inventory replenishing logic isn't realistic but 
-        #     # needs to be done this way until I can think of a good way 
-        #     # to avoid replenishing every second of the current hour
-        #     self.replenish_inventory()
+        if current_hour == self.refueling_time and inventory_level < 0.5:
+        #FIXME: Current iventory replenishing logic isn't realistic but 
+        # needs to be done this way until I can think of a good way 
+        # to avoid replenishing every second of the current hour
+            self.replenish_inventory()
 
         gas_prices_copy = gas_prices.copy()
         del gas_prices_copy[self.coordinate]
@@ -125,7 +123,7 @@ class DQNStation(GasStation):
 
         self.cars_at_intersection = traffic
 
-        #Update gas price using DQN algorithm:
+        # Update gas price using DQN algorithm:
         # Use: self.set_and_adjust_price(new_price)
         return self.posted_gas_price
 

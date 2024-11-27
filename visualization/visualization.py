@@ -88,9 +88,10 @@ def visualize(visualization_data):
             ))
         gas_station_ct += 1
 
-    # TO DO:
-    # - Display new variable 'seconds' next to the static map
-    # - 'seconds' starts at 0. There is a button underneath the 'seconds' display that allows user to increment 'seconds'.
+
+
+
+
     gui_right_offset = 100
 
     def convert_seconds_to_timestamp(total_seconds):
@@ -99,46 +100,66 @@ def visualize(visualization_data):
         timestamp = new_date.strftime("%b %d, %Y - %H:%M:%S")
         return timestamp
 
-    # Adding 'seconds' display
+    # Time display
     seconds = 0
     seconds_label = pyglet.text.Label(
         convert_seconds_to_timestamp(seconds),
         font_name='Arial',
         font_size=20,
         color=(0,0,0,255),
-        x=window_width - 360 - gui_right_offset,
+        x=window_width - 460,
         y=window_height - 40,
         anchor_x='left',
         anchor_y='center',
         batch=batch
     )
 
+    # Button to increment by a second
+    button0_width = 70
+    button0_height = 30
+    button0_x = window_width - 440 - gui_right_offset
+    button0_y = window_height - 100
     # Button to increment by a minute
     button1_width = 70
     button1_height = 30
-    button1_x = window_width - 390 - gui_right_offset
+    button1_x = window_width - 345 - gui_right_offset
     button1_y = window_height - 100
     # Button to increment by an hour
     button2_width = 70
     button2_height = 30
-    button2_x = window_width - 295 - gui_right_offset
+    button2_x = window_width - 250 - gui_right_offset
     button2_y = window_height - 100
     # Button to increment by a day
     button3_width = 70
     button3_height = 30
-    button3_x = window_width - 205 - gui_right_offset
+    button3_x = window_width - 145 - gui_right_offset
     button3_y = window_height - 100
     # Button to increment by a month
     button4_width = 70
     button4_height = 30
-    button4_x = window_width - 110 - gui_right_offset
+    button4_x = window_width - 40 - gui_right_offset
     button4_y = window_height - 100
     # Reset seconds to 0
-    reset_width = 70
+    reset_width = 100
     reset_height = 30
-    reset_x = window_width - 250 - gui_right_offset
+    reset_x = window_width - 265 - gui_right_offset
     reset_y = window_height - 140
 
+    # Button 0
+    button0 = Rectangle(
+        button0_x, button0_y, button0_width, button0_height, color=(100, 200, 100), batch=batch
+    )
+    button0_label = pyglet.text.Label(
+        "+sec",
+        font_name='Arial',
+        font_size=14,
+        color=(0,0,0,255),
+        x=button0_x + button0_width // 2,
+        y=button0_y + button0_height // 2,
+        anchor_x='center',
+        anchor_y='center',
+        batch=batch
+    )
     # Button 1
     button1 = Rectangle(
         button1_x, button1_y, button1_width, button1_height, color=(100, 200, 100), batch=batch
@@ -204,7 +225,7 @@ def visualize(visualization_data):
         reset_x, reset_y, reset_width, reset_height, color=(66, 164, 245), batch=batch
     )
     reset_label = pyglet.text.Label(
-        "reset",
+        "reset time",
         font_name='Arial',
         font_size=14,
         color=(0,0,0,255),
@@ -215,31 +236,58 @@ def visualize(visualization_data):
         batch=batch
     )
 
-    dqn_vars_init_label = None
-    if seconds < len(dynamic_data):
-        dqn_vars, _ = dynamic_data[seconds]
-        # Format the dqn_vars dictionary into the desired string format
-        formatted_text = "\n".join(f"{key}: {value}" for key, value in dqn_vars.items())
-        dqn_vars_init_label = formatted_text
-    else:
-        dqn_vars_init_label = "No Data"
 
-    dynamic_data_label = pyglet.text.Label(
-        dqn_vars_init_label,
-        font_name='Arial',
+    # Initializing car count labels
+    car_count_labels = []
+
+    def update_car_count_labels(car_counts):
+        for label in car_count_labels:
+            label.delete()
+        car_count_labels.clear()
+
+        for (coord_x, coord_y), num_cars in car_counts.items():
+            label = pyglet.text.Label(
+                str(num_cars),
+                font_name="Arial",
+                font_size=12,
+                color=(0, 0, 0, 255),
+                x=coord_x * cell_size + cell_size // 2,
+                y=coord_y * cell_size + cell_size // 2,
+                anchor_x="center",
+                anchor_y="center",
+                batch=batch,
+            )
+            car_count_labels.append(label)
+
+    dqn_vars_label = pyglet.text.Label(
+        "",
+        font_name="Arial",
         font_size=16,
         color=(0, 0, 0, 255),
-        x=50,
-        y=window_height - 50,
-        anchor_x='left',
-        anchor_y='center',
-        batch=batch
+        x=window_width - 460,
+        y=window_height - 300,
+        anchor_x="left",
+        anchor_y="center",
+        multiline=True,  # Allow multiline text rendering
+        width=400,
+        batch=batch,
     )
+
+    if seconds < len(dynamic_data):
+        dqn_vars, car_counts = dynamic_data[seconds]
+        formatted_text = "\n".join(f"{key}: {value}" for key, value in dqn_vars.items())
+        dqn_vars_label.text = formatted_text
+        update_car_count_labels(car_counts)
+    else:
+        dqn_vars_label.text = "No Data"
+        update_car_count_labels({})
 
     @window.event
     def on_mouse_press(x, y, button, modifiers):
         nonlocal seconds
-        if button1_x <= x <= button1_x + button1_width and button1_y <= y <= button1_y + button1_height:
+        if button0_x <= x <= button0_x + button0_width and button0_y <= y <= button0_y + button0_height:
+            seconds += 1
+        elif button1_x <= x <= button1_x + button1_width and button1_y <= y <= button1_y + button1_height:
             seconds += 60
         elif button2_x <= x <= button2_x + button2_width and button2_y <= y <= button2_y + button2_height:
             seconds += 3600
@@ -252,23 +300,22 @@ def visualize(visualization_data):
         else:
             return
         seconds_label.text = convert_seconds_to_timestamp(seconds)
-        
-        # Update dynamic data display
+
+        # Update dynamic data
         if seconds < len(dynamic_data):
-            dqn_vars, _ = dynamic_data[seconds]
-            # Format the dqn_vars dictionary into the desired string format
+            dqn_vars, car_counts = dynamic_data[seconds]
             formatted_text = "\n".join(f"{key}: {value}" for key, value in dqn_vars.items())
-            dynamic_data_label.text = formatted_text
+            dqn_vars_label.text = formatted_text
+            update_car_count_labels(car_counts)
         else:
-            dynamic_data_label.text = "No Data"
-
-
-
+            dqn_vars_label.text = "No Data"
+            update_car_count_labels({})
 
 
     @window.event
     def on_draw():
         window.clear()
         batch.draw()
+
 
     pyglet.app.run()

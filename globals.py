@@ -1,6 +1,6 @@
 ### Variables that toggle print statements for their respective objects:
 
-DEBUG_GAS_MARKET_SIMULATOR = True
+DEBUG_GAS_MARKET_SIMULATOR = False
 
 DEBUG_GAS_STATION = False
 
