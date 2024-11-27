@@ -1,12 +1,9 @@
 from components.gas_station import GasStation
-from enum import Enum
+
 from globals import DEBUG_DQN_STATION
 def debug(str):
     if DEBUG_DQN_STATION:
         print(str)
-
-# Using code from Dr. Sharon's DQN.py and Abstract_Solver.py as a template (we might have to notify Dr. Sharon that we did this)
-# Combining DQN and AbstractSolver classes
 
 class DQNStation(GasStation):
     def __init__(self, coordinate, gas_station_list, shortest_paths, intersections, starting_p_w, env, eval_env, options):
@@ -18,61 +15,6 @@ class DQNStation(GasStation):
         self.options = options
         self.total_steps = 0
     
-    def init_stats(self):
-        pass
-
-    def step(self, action):
-        """
-        Take one step in the environment while keeping track of statistical information
-        Param:
-            action:
-        Return:
-            next_state: The next state
-            reward: Immediate reward
-            done: Is next_state terminal
-            info: Gym transition information
-        """
-        pass
-
-    def calc_reward(self, state):
-        pass
-
-    def run_greedy(self):
-        """
-        Run the greedy policy.
-        """
-        pass
-    
-    # def close(self):
-    #     pass
-
-    def train_episode(self):
-        pass
-
-    def __str__(self):
-        pass
-
-    def create_greedy_policy(self):
-        pass
-
-    # def get_out_header():
-    #     ans = "Domain,Solver"
-    #     for s in Statistics:
-    #         ans += "," + s.name
-    #     return ans
-
-    # def plot(self, stats, smoothing_window=20, final=False):
-    #     pass
-
-    # def get_stat(self):
-    #     try:
-    #         domain = self.env.unwrapped.spec.id
-    #     except:
-    #         domain = self.env.name
-    #     ans = "{},{}".format(domain, str(self))
-    #     for s in Statistics:
-    #         ans += "," + str(self.statistics[s.value])
-    #     return ans
     def get_p_w(self):
         """Returns current price of wholesale"""
         return self.current_wholesale_price
@@ -82,11 +24,11 @@ class DQNStation(GasStation):
         return self.posted_gas_price
     
     def get_p_c(self):
-        """Returns dictionary of competitors' prices"""
+        """Returns dictionary of competitors' prices in order of their proximity to us"""
         return self.p_c
 
     def get_t(self):
-        """Returns current number of cars in front of gas station"""
+        """Returns current number of cars in front of our gas station"""
         return self.cars_at_intersection
     
     def get_d(self):
@@ -126,8 +68,3 @@ class DQNStation(GasStation):
         # Update gas price using DQN algorithm:
         # Use: self.set_and_adjust_price(new_price)
         return self.posted_gas_price
-
-class Statistics(Enum):
-    Episode = 0
-    Rewards = 1
-    Steps = 2
