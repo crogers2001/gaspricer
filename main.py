@@ -2,8 +2,11 @@ from map.gas_market_simulator import GasMarketSimulator
 from visualization.visualization import visualize
 from datetime import datetime, timedelta
 import sys
+import torch
 
 if __name__ == "__main__":
+    
+    print("CUDA Available: ", torch.cuda.is_available())
 ############################################################
 ## To enable debugging print statements, go to globals.py ##
 ## and toggle the file(s)' respective debug variable      ##
