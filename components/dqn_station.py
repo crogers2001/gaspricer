@@ -17,6 +17,7 @@ class DQNStation(GasStation):
         self.action_size = 21
         self.memory = deque(maxlen=2000)
         self.agent = DQNAgent(self.state_size, self.action_size)
+        self.discount_factor = 0.95
             
     def get_p_w(self):
         """Returns current price of wholesale"""
@@ -103,7 +104,13 @@ class DQNStation(GasStation):
 
     def calculate_reward(self):
         # Define how to calculate the reward
-        return self.gallons_last_hour - self.operating_costs
+        # return self.gallons_last_hour - self.operating_costs
+        
+        gallons_sold = self.get_d()  # Demand = Gallons sold in the last hour
+        profit = (gallons_sold * self.get_p_o()) - (gallons_sold * self.get_p_w())
+        volume = gallons_sold
+        reward = self.discount_factor * (profit + volume)
+        return reward
 
     def calculate_price_from_action(self, action):
         # Define how to map an action to a price
