@@ -319,3 +319,4 @@ def visualize(visualization_data):
 
 
     pyglet.app.run()
+

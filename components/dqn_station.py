@@ -18,6 +18,7 @@ class DQNStation(GasStation):
         self.memory = deque(maxlen=2000)
         self.agent = DQNAgent(self.state_size, self.action_size)
         self.discount_factor = 0.95
+        self.reward_history = []
             
     def get_p_w(self):
         """Returns current price of wholesale"""
@@ -45,6 +46,9 @@ class DQNStation(GasStation):
     
 
     def update(self, gas_prices, traffic, current_hour, new_p_w=None):
+        self._cleanup_old_sales()
+        self.current_hour = current_hour
+
         if self.clock.get_time() == 1: # Match nearest to start
             coord_of_nearest = self.competitor_priority_list[0]
             new_price = gas_prices[coord_of_nearest]
@@ -81,7 +85,9 @@ class DQNStation(GasStation):
         reward = self.calculate_reward()
         done = False
         
-        print("updating price and running simulation", state, action, reward, next_state, done)
+        debug(f'(dqn_station.py): State- {state}, Action- {action}, Reward- {reward}, NextState- {next_state}, Done- {done}')
+        self.reward_history.append(reward)
+
         self.remember(state, action, reward, next_state, done)
         if len(self.memory) > 32:
             self.replay(32)
@@ -105,10 +111,10 @@ class DQNStation(GasStation):
     def calculate_reward(self):
         # Define how to calculate the reward
         # return self.gallons_last_hour - self.operating_costs
-        
         gallons_sold = self.get_d()  # Demand = Gallons sold in the last hour
         profit = (gallons_sold * self.get_p_o()) - (gallons_sold * self.get_p_w())
         volume = gallons_sold
+
         reward = self.discount_factor * (profit + volume)
         return reward
 

@@ -15,7 +15,7 @@ def debug(str):
 
 class GasMarketSimulator:
     
-    def __init__(self, layout_name):
+    def __init__(self, layout_name, viz=True):
         self.map_data = self.get_map(layout_name)
         self.shortest_paths = get_shortest_paths(self.map_data["roadways"], self.map_data["intersections"])
         self.wholesale_prices = get_wholesale_prices(start='2023-01-01', end='2023-12-31')
@@ -34,6 +34,7 @@ class GasMarketSimulator:
         self.update_today_hourly_traffic(noise_sd=0.025, init=True)
         self.car_count = 0
         self.cars = self.init_cars()
+        self.viz = viz
 
 
     def update_today_hourly_traffic(self, noise_sd, init=False):
@@ -151,6 +152,16 @@ class GasMarketSimulator:
                 "max_traffic": 500, # Absolute maximum number of cars on map
             }
             return College_Station
+        elif name == "College Station Baseline":
+            baseline = {
+                "height": 6, # Grid map height (y)
+                "width": 5, # Grid map width (x)
+                "gas_stations": [((0,3), "match_nearest"), ((0,2), "fixed_markup"), ((0,6), "fixed_markup"), ((2,6), "match_nearest"), ((5,1), "fixed_markup")], # coordinate, pricing strategy pairs
+                "roadways": [((0,6), (2,6)), ((2,6), (5,6)), ((0,6), (0,3)), ((2,6), (2,3)), ((5,6), (5,3)), ((0,3), (2,3)), ((2,3), (5,3)), ((0,3), (0,2)), ((0,2), (0,1)), ((0,1), (0,0)), ((5,3), (5,1)), ((5,1), (5,0)), ((0,0), (2,0)), ((2,0), (3,0)), ((3,0), (5,0))], # endpoint coordinate, endpoint coordinate pairs
+                "intersections": {(0, 6): 0, (2, 6): 1, (5, 6): 2, (0, 3): 3, (2, 3): 4, (5, 3): 5, (0, 2): 6, (0, 1): 7, (5, 1): 8, (0, 0): 9, (2, 0): 10, (3, 0): 11, (5, 0): 12}, # dictionary of: key = coordinates, value = id
+                "max_traffic": 500, # Absolute maximum number of cars on map
+            }
+            return baseline
         else:
             raise ValueError("Map doesn't exist.")
         
@@ -276,7 +287,7 @@ class GasMarketSimulator:
                     dqn_state_vars_display["d"] = gas_station.get_d()
                     dqn_state_vars_display["i"] = gas_station.get_i()
                 else:
-                    dqn_state_vars_display["p_c"][coordinate] = gas_station.update(old_gas_prices, p_w if p_w_update else None)
+                    dqn_state_vars_display["p_c"][coordinate] = gas_station.update(old_gas_prices, current_hour, p_w if p_w_update else None)
 
 
             ### Spawning Cars to maintain expected traffic volume to compensate for despawning Cars:
@@ -288,21 +299,19 @@ class GasMarketSimulator:
 
 
             ### Add a new entry into the visualization_data dictionary
-            self.add_viz_data(dqn_state_vars_display, car_locations_display)
+            if self.viz == True:
+                self.add_viz_data(dqn_state_vars_display, car_locations_display)
 
             loops += 1
             self.clock.tick()
         
-        debug(f'(gms.py): Viz data start: {self.visualization_data["dynamic"][0]}')
-        debug(f'(gms.py): Viz data final: {self.visualization_data["dynamic"][iterations-1]}')
-        debug(f'(gms.py): End car count: {len(self.cars)}')
-        debug(f'DQNStation state variables at end:')
-        dqn, _ = self.gas_stations[(0,3)]
-        debug(f'p_w = {dqn.get_p_w()}')
-        debug(f'p_o = {dqn.get_p_o()}')
-        debug(f'p_c = {dqn.get_p_c()}')
-        debug(f't = {dqn.get_t()}')
-        debug(f'd = {dqn.get_d()}')
-        debug(f'i = {dqn.get_i()}')
+        # debug(f'DQNStation state variables at end:')
+        # dqn, _ = self.gas_stations[(0,3)]
+        # debug(f'p_w = {dqn.get_p_w()}')
+        # debug(f'p_o = {dqn.get_p_o()}')
+        # debug(f'p_c = {dqn.get_p_c()}')
+        # debug(f't = {dqn.get_t()}')
+        # debug(f'd = {dqn.get_d()}')
+        # debug(f'i = {dqn.get_i()}')
 
 

@@ -1,0 +1,48 @@
+
+-------start---------
+Baseline Simulation #1 - 55132.092 , 304283.5517
+Baseline Simulation #2 - 50472.729 , 299764.8271
+Baseline Simulation #3 - 58449.322 , 487740.3241
+Baseline Simulation #4 - 56912.577 , 301855.7035
+Baseline Simulation #5 - 32737.049 , 302532.5144
+Baseline Simulation #6 - 59692.99 , 300974.803
+Baseline Simulation #7 - 54566.592 , 304123.7669
+Baseline Simulation #8 - 35554.087 , 328025.0707
+Baseline Simulation #9 - 48477.071 , 304601.2051
+Baseline Simulation #10 - 56971.089 , 301502.4901
+Baseline Simulation #11 - 66307.265 , 515404.4133
+Baseline Simulation #12 - 71748.983 , 483859.5818
+Baseline Simulation #13 - 66572.226 , 515121.6587
+Baseline Simulation #14 - 36517.703 , 326050.9174
+Baseline Simulation #15 - 57659.78 , 514819.4686
+Baseline Simulation #16 - 49237.699 , 303936.4121
+Baseline Simulation #17 - 48367.16 , 298562.7133
+Baseline Simulation #18 - 55362.707 , 304190.6993
+Baseline Simulation #19 - 39820.891 , 326400.7426
+Baseline Simulation #20 - 69826.806 , 491738.0721
+Experimental Simulation #1 - 85907.568 , 468313.8036
+Experimental Simulation #2 - 91489.508 , 508738.4942
+Experimental Simulation #3 - 83278.115 , 452144.6883
+Experimental Simulation #4 - 86007.32 , 473811.4215
+Experimental Simulation #5 - 91190.378 , 513316.9196
+Experimental Simulation #6 - 85601.244 , 472584.9342
+Experimental Simulation #7 - 88047.149 , 492189.2753
+Experimental Simulation #8 - 82156.067 , 435619.7225
+Experimental Simulation #9 - 88017.428 , 491307.0212
+Experimental Simulation #10 - 86032.777 , 475186.6338
+Experimental Simulation #11 - 88228.701 , 494864.7057
+Experimental Simulation #12 - 84326.257 , 464349.2114
+Experimental Simulation #13 - 83244.818 , 458509.0426
+Experimental Simulation #14 - 82190.98 , 440720.9437
+Experimental Simulation #15 - 82874.809 , 452487.6706
+Experimental Simulation #16 - 86135.285 , 478051.9658
+Experimental Simulation #17 - 85386.839 , 467696.9496
+Experimental Simulation #18 - 84687.638 , 466213.3256
+Experimental Simulation #19 - 80154.422 , 424872.7208
+Experimental Simulation #20 - 82331.046 , 448082.0893
+--------end--------
+
+B Total Profit: Mean = 53519.34, Std Dev = 10847.09
+B Total Volume: Mean = 365774.45, Std Dev = 89548.40
+E Total Profit: Mean = 85364.42, Std Dev = 2906.83
+E Total Volume: Mean = 468953.08, Std Dev = 22804.32

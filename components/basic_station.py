@@ -26,16 +26,24 @@ class BasicStation(GasStation):
                 return self.current_wholesale_price + self.fixed_markup # set the price to a fixed markup above wholesale
             return fixed_markup
         
-    def update(self, gas_prices, new_wholesale_price=None):
+    def update(self, gas_prices, current_hour, new_wholesale_price=None):
         """
         Returns new gas price
         Updates wholesale_price
         Updates gas price based on pricing strategy of competing station
         """
+        self._cleanup_old_sales()
+
         if new_wholesale_price:
             self.current_wholesale_price = new_wholesale_price
             self.replenish_inventory()
             
+        inventory_level = self.current_inventory / self.maximum_inventory_capacity
+        if current_hour == self.refueling_time and inventory_level < 0.5:
+        #FIXME: Current iventory replenishing logic isn't realistic but 
+        # needs to be done this way until I can think of a good way 
+        # to avoid replenishing every second of the current hour
+            self.replenish_inventory()
         self.set_and_adjust_price(self.pricing_strategy(gas_prices))
         return self.posted_gas_price
 

@@ -8,3 +8,10 @@ Changing this should not be too complicated.
 
 TO DO:
 -Update gas_station so it cleans up its deque even when a sale doesn't occur
+
+
+WITH VIZ: 
+Running simulator for 90 days results in ~15.74GB of memory usage at the end, takes 8 min 22 sec
+
+WITHOUT VIZ:
+Running simulator for 60 days results in ~275MB of memory usage at the end, takes 4 min 35 sec

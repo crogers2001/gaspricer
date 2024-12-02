@@ -21,10 +21,10 @@ class GasStation:
         self.sales = {} # key = car_id
         self.sales_last_hour = deque()
         self.gallons_last_hour = 0
-        self.purchases = {} # key = timestamp
         self.account_balance = 100000 # starting balance
         self.cars_at_intersection = 0
         self.refueling_time = random.randint(0,6)
+        self.current_hour = 0
 
 
     def get_station_priority_list(self, gas_station_list, shortest_paths, intersections):
@@ -61,16 +61,14 @@ class GasStation:
         timestamp = self.clock.get_time()
         self.sales_last_hour.append((timestamp, volume, price, car_id))
 
-        if car_id not in self.sales:
-            self.sales[car_id] = {'total_volume': 0, 'total_revenue': 0, 'total_profit': 0}
-        self.sales[car_id]['total_volume'] += volume
-        self.sales[car_id]['total_revenue'] += revenue
-        self.sales[car_id]['total_profit'] += profit
+        if timestamp not in self.sales:
+            self.sales[timestamp] = [0,0]
+        self.sales[timestamp][0] += profit
+        self.sales[timestamp][1] += volume
 
         self.gallons_last_hour += volume
         self.account_balance += revenue
         debug(f'(gas_station.py): Station {self.coordinate} sold {volume} gallons of gas to Car #{car_id}')
-        self._cleanup_old_sales()
         return True
 
     def _cleanup_old_sales(self):
@@ -88,7 +86,6 @@ class GasStation:
             return False
         volume = self.maximum_inventory_capacity - self.current_inventory
         cost = -(volume * self.current_wholesale_price)
-        self.purchases[self.clock.get_time()] = (cost, volume, self.current_wholesale_price)
         self.current_inventory = self.maximum_inventory_capacity
         self.account_balance =+ cost
         debug(f'(gas_station.py): Station {self.coordinate} restocked with {volume} gallons (Time: {self.clock.get_time()}).')
