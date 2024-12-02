@@ -1,11 +1,11 @@
-# Gasoline Pricing Optimization Using Deep
+# Gasoline Pricing Optimization Using Deep Reinforcement Learning
 Reinforcement Learning
 Final project for CSCE 642 (Deep Reinforcement Learning)
 
 Group Members: Collin Rogers (128007214) and Mahima Ganni (236002627)
 
-### Get Started
-## Clone the repository 
+## Get Started
+### Clone the repository 
 ```
 git clone https://github.com/crogers2001/gaspricer.git
 cd gaspricer
@@ -19,7 +19,7 @@ Install the packages given by
 pip install -r requirements.txt
 ```
 
-### Running the simulator
+## Running the simulator
 To run the simulator
 
 ```bash
