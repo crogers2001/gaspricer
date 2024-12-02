@@ -4,7 +4,7 @@ Final project for CSCE 642 (Deep Reinforcement Learning)
 
 Group Members: Collin Rogers (128007214) and Mahima Ganni (236002627)
 
-## Get Started
+### Get Started
 ```
 ## Clone the repository 
 git clone https://github.com/crogers2001/gaspricer.git
@@ -17,4 +17,11 @@ For setting up the environment, we recommend using conda + pip or virtual env + 
 Install the packages given by
 ```bash
 pip install -r requirements.txt
+```
+
+### Running the simulator
+To run the simulator
+
+```bash
+python main.py
 ```
