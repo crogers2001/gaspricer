@@ -14,7 +14,8 @@ class DQNStation(GasStation):
         self.p_c = {}
         # self.dqn_agent = DQNAgent(coordinate, gas_station_list, shortest_paths, intersections, starting_p_w)
         self.state_size = 6  # State includes p_w, p_o, avg(p_c), traffic, demand, inventory
-        self.action_size = 21
+        self.action_size = 7 # -0.03, -0.02, -0.01, 0, +0.01, +0.02, +0.03
+        self.action_price_delta = (self.action_size - 1) / 2
         self.memory = deque(maxlen=2000)
         self.agent = DQNAgent(self.state_size, self.action_size)
         self.discount_factor = 0.95
@@ -77,7 +78,7 @@ class DQNStation(GasStation):
         # Use: self.set_and_adjust_price(new_price)
         state = self.get_state(gas_prices, traffic)
         action = self.act(state)
-        price_change = (action - 10) / 100 
+        price_change = (action - self.action_price_delta) / 100 
         new_price = max(self.get_p_w(), min(self.get_p_o() + price_change, self.get_p_w() + 0.5))
         
         self.set_and_adjust_price(new_price)
